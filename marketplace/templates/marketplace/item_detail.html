@@ -125,12 +125,24 @@
             <!-- 操作按钮 -->
             <div class="flex gap-3 mt-4">
                 {% if user.is_authenticated %}
-                    <button class="flex-1 py-3 rounded-full font-medium border hover:bg-gray-50" style="border-color: var(--primary-green); color: var(--primary-green);">
-                        Save
-                    </button>
-                    <button class="flex-1 py-3 rounded-full font-medium btn-secondary">
+                    <form method="post" action="{% url 'marketplace:toggle_favorite' item.id %}" class="flex-1">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full py-3 rounded-full font-medium border transition"
+                                {% if is_favorited %}
+                                    style="background-color: rgba(255, 121, 90, 1); border-color: var(--primary-orange); color: white;"
+                                {% else %}
+                                    style="border-color: var(--primary-green); color: var(--primary-green); background-color: white;"
+                                {% endif %}>
+                            {% if is_favorited %}
+                                ♥ Saved
+                            {% else %}
+                                Save
+                            {% endif %}
+                        </button>
+                    </form>
+                    <a href="{% url 'marketplace:message_seller' item.id %}" class="flex-1 py-3 rounded-full font-medium btn-secondary text-center">
                         Message Seller
-                    </button>
+                    </a>
                 {% else %}
                     <a href="{% url 'marketplace:login' %}" class="flex-1 py-3 rounded-full font-medium btn-primary text-center">
                         Login to contact

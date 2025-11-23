@@ -67,9 +67,16 @@ def item_detail(request, item_id):
         models.Q(category=item.category) | models.Q(major=item.major)
     ).exclude(id=item.id)[:4]
 
+    # 检查当前用户是否收藏
+    is_favorited = False
+    if request.user.is_authenticated:
+        from goods.models import Favorite
+        is_favorited = Favorite.objects.filter(user=request.user, item=item).exists()
+
     context = {
         'item': item,
-        'related_items': related_items
+        'related_items': related_items,
+        'is_favorited': is_favorited
     }
     return render(request, 'marketplace/item_detail.html', context)
 
@@ -193,3 +200,59 @@ def delete_item(request, item_id):
         return redirect('marketplace:my_account')
 
     return render(request, 'marketplace/delete_confirm.html', {'item': item})
+
+
+@login_required
+def message_seller(request, item_id):
+    """给卖家留言"""
+    from goods.models import Message
+    item = get_object_or_404(Goods, id=item_id)
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            Message.objects.create(
+                item=item,
+                sender=request.user,
+                content=content
+            )
+            messages.success(request, 'Message sent!')
+            return redirect('marketplace:item_detail', item_id=item.id)
+
+    # 获取该商品的所有留言
+    item_messages = Message.objects.filter(item=item).select_related('sender')
+
+    context = {
+        'item': item,
+        'item_messages': item_messages
+    }
+    return render(request, 'marketplace/message_seller.html', context)
+
+
+@login_required
+def toggle_favorite(request, item_id):
+    """收藏/取消收藏"""
+    from goods.models import Favorite
+    item = get_object_or_404(Goods, id=item_id)
+
+    favorite, created = Favorite.objects.get_or_create(user=request.user, item=item)
+
+    if not created:
+        # 已存在,则删除(取消收藏)
+        favorite.delete()
+        messages.success(request, 'Removed from favorites')
+    else:
+        # 新创建(添加收藏)
+        messages.success(request, 'Added to favorites!')
+
+    return redirect('marketplace:item_detail', item_id=item.id)
+
+
+@login_required
+def favorites_list(request):
+    """我的收藏列表"""
+    from goods.models import Favorite
+    favorites = Favorite.objects.filter(user=request.user).select_related('item')
+
+    context = {'favorites': favorites}
+    return render(request, 'marketplace/favorites.html', context)

@@ -1,7 +1,6 @@
 # goods/admin.py
 from django.contrib import admin
-from .models import Goods, GoodsImage, OutcomeImage
-
+from .models import Goods, GoodsImage, OutcomeImage, Message, Favorite
 
 class GoodsImageInline(admin.TabularInline):
     """商品图片内联编辑"""
@@ -55,3 +54,13 @@ class GoodsImageAdmin(admin.ModelAdmin):
 class OutcomeImageAdmin(admin.ModelAdmin):
     list_display = ['goods', 'order', 'image']
     list_filter = ['goods']
+
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ['sender', 'item', 'created_at', 'is_read']
+    list_filter = ['is_read', 'created_at']
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ['user', 'item', 'created_at']
+    list_filter = ['created_at']

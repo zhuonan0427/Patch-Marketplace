@@ -15,4 +15,7 @@ urlpatterns = [
     path('post/', views.post_item, name='post_item'),
     path('item/<int:item_id>/edit/', views.edit_item, name='edit_item'),
     path('item/<int:item_id>/delete/', views.delete_item, name='delete_item'),
+    path('item/<int:item_id>/message/', views.message_seller, name='message_seller'),
+    path('item/<int:item_id>/favorite/', views.toggle_favorite, name='toggle_favorite'),
+    path('favorites/', views.favorites_list, name='favorites'),
 ]

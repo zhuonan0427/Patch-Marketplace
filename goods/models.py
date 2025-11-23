@@ -106,3 +106,32 @@ class OutcomeImage(models.Model):
 
     def __str__(self):
         return f"{self.goods.name} - Outcome {self.order}"
+
+
+class Message(models.Model):
+    """买家卖家对话消息"""
+    item = models.ForeignKey(Goods, on_delete=models.CASCADE, related_name='messages')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"{self.sender.username} -> {self.item.name}"
+
+
+class Favorite(models.Model):
+    """用户收藏"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites')
+    item = models.ForeignKey(Goods, on_delete=models.CASCADE, related_name='favorited_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'item')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.username} favorited {self.item.name}"
