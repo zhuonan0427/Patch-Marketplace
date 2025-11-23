@@ -1,0 +1,67 @@
+{% extends 'marketplace/base.html' %}
+
+{% block content %}
+<!-- Hero Section - 首屏大图 -->
+<section class="relative h-screen flex items-center justify-center">
+    <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-green-50 opacity-50"></div>
+    <div class="relative z-10 text-center px-4">
+        <h1 class="text-5xl md:text-7xl font-semibold mb-6" style="color: var(--primary-green);">
+            Give Your Art Supplies<br>
+            <span style="color: var(--primary-orange);">A Second Life</span>
+        </h1>
+        <p class="text-lg md:text-xl mb-8" style="color: var(--dark-gray);">
+            A secondhand marketplace for art students
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'marketplace:shop' %}" class="px-8 py-4 rounded-full text-lg font-medium btn-primary inline-block">
+                Start Shopping
+            </a>
+            <a href="#" class="px-8 py-4 rounded-full text-lg font-medium btn-secondary inline-block">
+                Post Item
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- 特色介绍 -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div class="text-center">
+            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style="background-color: var(--accent-light-green);">
+                <span class="text-2xl">🎨</span>
+            </div>
+            <h3 class="text-xl font-semibold mb-2" style="color: var(--primary-green);">Built for Art Student</h3>
+            <p style="color: var(--dark-gray);">Know your tools, Know your needs</p>
+        </div>
+        <div class="text-center">
+            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style="background-color: var(--accent-light-green);">
+                <span class="text-2xl">📦</span>
+            </div>
+            <h3 class="text-xl font-semibold mb-2" style="color: var(--primary-green);">校园快递柜</h3>
+            <p style="color: var(--dark-gray);">Safe Trading Method</p>
+        </div>
+        <div class="text-center">
+            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style="background-color: var(--accent-light-green);">
+                <span class="text-2xl">♻️</span>
+            </div>
+            <h3 class="text-xl font-semibold mb-2" style="color: var(--primary-green);">可持续创作</h3>
+            <p style="color: var(--dark-gray);">让好物流转,减少浪费</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20" style="background-color: var(--accent-light-green);">
+    <div class="max-w-4xl mx-auto text-center px-4">
+        <h2 class="text-3xl md:text-4xl font-semibold mb-6" style="color: var(--primary-green);">
+            Ready to begin?!
+        </h2>
+        <p class="text-lg mb-8" style="color: var(--dark-gray);">
+            Join Patch Community, discover more second-hand tools~~
+        </p>
+        <a href="{% url 'marketplace:shop' %}" class="px-8 py-4 rounded-full text-lg font-medium btn-primary inline-block">
+            Explore NOW
+        </a>
+    </div>
+</section>
+{% endblock %}

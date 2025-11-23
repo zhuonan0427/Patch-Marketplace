@@ -1,0 +1,214 @@
+{% extends 'marketplace/base.html' %}
+
+{% block title %}{{ item.name }} - Patch!{% endblock %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- 返回按钮 -->
+    <a href="{% url 'marketplace:shop' %}" class="inline-flex items-center mb-6 hover:opacity-70" style="color: var(--dark-gray);">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back to shop
+    </a>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- 左侧: 商品图片轮播 -->
+        <div>
+            <div class="aspect-square bg-gray-100 rounded-2xl overflow-hidden mb-4">
+                {% if item.images.all %}
+                    <img id="mainImage" src="{{ item.images.first.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover">
+                {% else %}
+                    <div class="w-full h-full flex items-center justify-center" style="background-color: var(--light-gray);">
+                        <span class="text-8xl">🎨</span>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- 缩略图 -->
+            {% if item.images.count > 1 %}
+            <div class="flex gap-3">
+                {% for img in item.images.all %}
+                <button onclick="changeImage('{{ img.image.url }}')" class="w-20 h-20 rounded-lg overflow-hidden border-2 hover:border-orange-400" style="border-color: var(--light-gray);">
+                    <img src="{{ img.image.url }}" alt="Thumbnail" class="w-full h-full object-cover">
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- 右侧: 商品信息 -->
+        <div class="flex flex-col">
+            <!-- 标题和价格 -->
+            <h1 class="text-4xl font-semibold mb-4" style="color: var(--primary-green);">
+                {{ item.name }}
+            </h1>
+
+            <p class="text-3xl font-semibold mb-6" style="color: var(--primary-orange);">
+                ${{ item.price }}
+            </p>
+
+            <!-- Tags -->
+            <div class="flex flex-wrap gap-2 mb-6">
+                {% if item.major %}
+                <span class="px-3 py-1 rounded-full text-sm font-medium tag">
+                    {{ item.get_major_display }}
+                </span>
+                {% endif %}
+                {% if item.professor %}
+                <span class="px-3 py-1 rounded-full text-sm font-medium tag">
+                    {{ item.professor }}
+                </span>
+                {% endif %}
+                {% if item.category %}
+                <span class="px-3 py-1 rounded-full text-sm font-medium tag">
+                    {{ item.get_category_display }}
+                </span>
+                {% endif %}
+                {% if item.course_code %}
+                <span class="px-3 py-1 rounded-full text-sm font-medium tag">
+                    {{ item.course_code }}
+                </span>
+                {% endif %}
+            </div>
+
+            <!-- 发布日期 -->
+            <p class="text-sm mb-6" style="color: var(--dark-gray);">
+                Date Posted: {{ item.created_at|date:"Nov d, Y" }}
+            </p>
+
+            <!-- Description -->
+            {% if item.description %}
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold mb-2" style="color: var(--text-black);">Description</h2>
+                <p class="leading-relaxed whitespace-pre-line" style="color: var(--dark-gray);">{{ item.description }}</p>
+            </div>
+            {% endif %}
+
+            <!-- 可折叠信息 -->
+            {% if item.amount_usage %}
+            <details class="mb-4 pb-4 border-b" style="border-color: var(--light-gray);">
+                <summary class="cursor-pointer font-semibold flex justify-between items-center" style="color: var(--text-black);">
+                    Amount and Usage
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </summary>
+                <p class="mt-3 leading-relaxed" style="color: var(--dark-gray);">{{ item.amount_usage }}</p>
+            </details>
+            {% endif %}
+
+            {% if item.payment_methods %}
+            <details class="mb-4 pb-4 border-b" style="border-color: var(--light-gray);">
+                <summary class="cursor-pointer font-semibold flex justify-between items-center" style="color: var(--text-black);">
+                    Accepted Payment
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </summary>
+                <p class="mt-3" style="color: var(--dark-gray);">{{ item.payment_methods }}</p>
+            </details>
+            {% endif %}
+
+            {% if item.additional_info %}
+            <details class="mb-6 pb-4 border-b" style="border-color: var(--light-gray);">
+                <summary class="cursor-pointer font-semibold flex justify-between items-center" style="color: var(--text-black);">
+                    Additional Info
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </summary>
+                <p class="mt-3 leading-relaxed" style="color: var(--dark-gray);">{{ item.additional_info }}</p>
+            </details>
+            {% endif %}
+
+            <!-- 操作按钮 -->
+            <div class="flex gap-3 mt-4">
+                {% if user.is_authenticated %}
+                    <button class="flex-1 py-3 rounded-full font-medium border hover:bg-gray-50" style="border-color: var(--primary-green); color: var(--primary-green);">
+                        Save
+                    </button>
+                    <button class="flex-1 py-3 rounded-full font-medium btn-secondary">
+                        Message Seller
+                    </button>
+                {% else %}
+                    <a href="{% url 'marketplace:login' %}" class="flex-1 py-3 rounded-full font-medium btn-primary text-center">
+                        Login to contact
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Outcome Section -->
+    {% if item.outcomes.all %}
+    <section class="mt-20">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="text-3xl font-semibold" style="color: var(--primary-orange);">Outcome</h2>
+            <svg class="w-8 h-8" style="color: var(--primary-orange);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+        </div>
+
+        <!-- Outcome描述 -->
+        {% if item.outcome_description %}
+        <p class="mb-6 text-lg leading-relaxed" style="color: var(--dark-gray);">
+            {{ item.outcome_description }}
+        </p>
+        {% endif %}
+
+        <!-- Outcome图片展示 -->
+        <div class="relative">
+            <div class="aspect-video bg-gray-100 rounded-2xl overflow-hidden">
+                <img id="outcomeImage" src="{{ item.outcomes.first.image.url }}" alt="Outcome" class="w-full h-full object-cover">
+            </div>
+
+            <!-- 轮播控制 -->
+            {% if item.outcomes.count > 1 %}
+            <div class="flex gap-3 mt-4 justify-center">
+                {% for outcome in item.outcomes.all %}
+                <button onclick="changeOutcome('{{ outcome.image.url }}')" class="w-16 h-16 rounded-lg overflow-hidden border-2 hover:border-orange-400" style="border-color: var(--light-gray);">
+                    <img src="{{ outcome.image.url }}" alt="Outcome thumbnail" class="w-full h-full object-cover">
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Related Items -->
+    <section class="mt-20">
+        <h2 class="text-2xl font-semibold mb-6" style="color: var(--text-black);">Related Items</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {% for related in related_items %}
+            <a href="{% url 'marketplace:item_detail' related.id %}" class="group">
+                <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-3">
+                    {% if related.images.first %}
+                        <img src="{{ related.images.first.image.url }}" alt="{{ related.name }}" class="w-full h-full object-cover group-hover:opacity-90 transition">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center" style="background-color: var(--light-gray);">
+                            <span class="text-4xl">🎨</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <h3 class="font-medium truncate" style="color: var(--text-black);">{{ related.name }}</h3>
+                <p class="text-lg font-semibold" style="color: var(--primary-orange);">${{ related.price }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+</section>
+
+<script>
+// 切换主图
+function changeImage(url) {
+    document.getElementById('mainImage').src = url;
+}
+
+// 切换Outcome图
+function changeOutcome(url) {
+    document.getElementById('outcomeImage').src = url;
+}
+</script>
+{% endblock %}

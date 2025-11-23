@@ -1,0 +1,77 @@
+{% extends 'marketplace/base.html' %}
+
+{% block title %}Sign Up - Patch!{% endblock %}
+
+{% block content %}
+<section class="max-w-md mx-auto px-4 py-20">
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+        <h1 class="text-3xl font-semibold mb-6 text-center" style="color: var(--primary-green);">
+            Join Patch!
+        </h1>
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- 用户名 -->
+            <div>
+                <label for="id_username" class="block text-sm font-medium mb-2" style="color: var(--text-black);">
+                    Username
+                </label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.username.errors.0 }}</p>
+                {% endif %}
+                <p class="text-xs mt-1" style="color: var(--dark-gray);">150 characters or fewer. Letters, digits and @/./+/-/_ only</p>
+            </div>
+
+            <!-- 密码 -->
+            <div>
+                <label for="id_password1" class="block text-sm font-medium mb-2" style="color: var(--text-black);">
+                    Password
+                </label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.password1.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- 确认密码 -->
+            <div>
+                <label for="id_password2" class="block text-sm font-medium mb-2" style="color: var(--text-black);">
+                    Confirm Password
+                </label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.password2.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- 提交按钮 -->
+            <button type="submit" class="w-full py-3 rounded-full font-medium btn-primary">
+                Create Account
+            </button>
+        </form>
+
+        <p class="text-center mt-6 text-sm" style="color: var(--dark-gray);">
+            Already have an account? <a href="{% url 'marketplace:login' %}" class="font-medium" style="color: var(--primary-orange);">Login now</a>
+        </p>
+    </div>
+</section>
+
+<style>
+    /* 美化Django表单字段 */
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--light-gray);
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+    }
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+        outline: none;
+        border-color: var(--primary-orange);
+    }
+</style>
+{% endblock %}

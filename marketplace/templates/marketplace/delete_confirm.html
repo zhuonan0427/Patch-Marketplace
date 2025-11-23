@@ -1,0 +1,35 @@
+{% extends 'marketplace/base.html' %}
+
+{% block title %}Delete Item - Patch!{% endblock %}
+
+{% block content %}
+<section class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="bg-white rounded-2xl shadow-lg p-8 text-center">
+        <div class="mb-6">
+            <span class="text-6xl">⚠️</span>
+        </div>
+
+        <h1 class="text-3xl font-semibold mb-4" style="color: var(--primary-green);">
+            Delete Item?
+        </h1>
+
+        <p class="text-lg mb-2" style="color: var(--text-black);">
+            Are you sure you want to delete "{{ item.name }}"?
+        </p>
+
+        <p class="mb-8" style="color: var(--dark-gray);">
+            This action cannot be undone.
+        </p>
+
+        <form method="post" class="flex gap-4 justify-center">
+            {% csrf_token %}
+            <button type="submit" class="px-8 py-3 rounded-full font-medium text-white" style="background-color: #ef4444;">
+                Yes, Delete
+            </button>
+            <a href="{% url 'marketplace:my_account' %}" class="px-8 py-3 rounded-full font-medium border hover:bg-gray-50" style="border-color: var(--dark-gray); color: var(--dark-gray);">
+                Cancel
+            </a>
+        </form>
+    </div>
+</section>
+{% endblock %}

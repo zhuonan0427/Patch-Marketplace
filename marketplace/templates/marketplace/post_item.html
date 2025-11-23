@@ -1,0 +1,148 @@
+{% extends 'marketplace/base.html' %}
+
+{% block title %}Post Item - Patch!{% endblock %}
+
+{% block content %}
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h1 class="text-3xl font-semibold mb-2" style="color: var(--primary-green);">Post New Item</h1>
+    <p class="mb-8" style="color: var(--dark-gray);">Fill in the details about your item</p>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-8">
+        {% csrf_token %}
+
+        <!-- Basic Information -->
+        <div class="bg-white rounded-2xl shadow-sm p-6 border" style="border-color: var(--light-gray);">
+            <h2 class="text-xl font-semibold mb-4" style="color: var(--text-black);">Basic Information</h2>
+
+            <div class="space-y-4">
+                <div>
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                    {% if form.name.errors %}<p class="text-red-500 text-sm mt-1">{{ form.name.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div>
+                    {{ form.price.label_tag }}
+                    {{ form.price }}
+                    {% if form.price.errors %}<p class="text-red-500 text-sm mt-1">{{ form.price.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div>
+                    {{ form.description.label_tag }}
+                    {{ form.description }}
+                    {% if form.description.errors %}<p class="text-red-500 text-sm mt-1">{{ form.description.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Images -->
+        <div class="bg-white rounded-2xl shadow-sm p-6 border" style="border-color: var(--light-gray);">
+            <h2 class="text-xl font-semibold mb-2" style="color: var(--text-black);">Product Images</h2>
+            <p class="text-sm mb-4" style="color: var(--dark-gray);">Upload up to 3 images</p>
+
+            <input type="file" name="product_images" multiple accept="image/*" class="w-full px-4 py-3 border rounded-lg" style="border-color: var(--light-gray);">
+        </div>
+
+        <!-- Tags & Classification -->
+        <div class="bg-white rounded-2xl shadow-sm p-6 border" style="border-color: var(--light-gray);">
+            <h2 class="text-xl font-semibold mb-4" style="color: var(--text-black);">Tags & Classification</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    {{ form.major.label_tag }}
+                    {{ form.major }}
+                </div>
+
+                <div>
+                    {{ form.category.label_tag }}
+                    {{ form.category }}
+                </div>
+
+                <div>
+                    {{ form.professor.label_tag }}
+                    {{ form.professor }}
+                </div>
+
+                <div>
+                    {{ form.course_code.label_tag }}
+                    {{ form.course_code }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Information -->
+        <div class="bg-white rounded-2xl shadow-sm p-6 border" style="border-color: var(--light-gray);">
+            <h2 class="text-xl font-semibold mb-4" style="color: var(--text-black);">Detailed Information</h2>
+
+            <div class="space-y-4">
+                <div>
+                    {{ form.amount_usage.label_tag }}
+                    {{ form.amount_usage }}
+                </div>
+
+                <div>
+                    {{ form.payment_methods.label_tag }}
+                    {{ form.payment_methods }}
+                </div>
+
+                <div>
+                    {{ form.additional_info.label_tag }}
+                    {{ form.additional_info }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Outcome Section -->
+        <div class="bg-white rounded-2xl shadow-sm p-6 border" style="border-color: var(--light-gray);">
+            <h2 class="text-xl font-semibold mb-2" style="color: var(--primary-orange);">Outcome (Optional)</h2>
+            <p class="text-sm mb-4" style="color: var(--dark-gray);">Show works created with this item</p>
+
+            <div class="space-y-4">
+                <div>
+                    {{ form.outcome_description.label_tag }}
+                    {{ form.outcome_description }}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2" style="color: var(--text-black);">Outcome Images</label>
+                    <p class="text-xs mb-2" style="color: var(--dark-gray);">Upload up to 5 images</p>
+                    <input type="file" name="outcome_images" multiple accept="image/*" class="w-full px-4 py-3 border rounded-lg" style="border-color: var(--light-gray);">
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="flex gap-4">
+            <button type="submit" class="flex-1 py-4 rounded-full font-medium btn-primary">
+                Post Item
+            </button>
+            <a href="{% url 'marketplace:shop' %}" class="flex-1 py-4 rounded-full font-medium text-center border hover:bg-gray-50" style="border-color: var(--dark-gray); color: var(--dark-gray);">
+                Cancel
+            </a>
+        </div>
+    </form>
+</section>
+
+<style>
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select,
+    input[type="file"] {
+        border-color: var(--light-gray);
+    }
+    input:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: var(--primary-orange);
+    }
+    label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: var(--text-black);
+    }
+</style>
+{% endblock %}

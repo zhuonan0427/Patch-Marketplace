@@ -1,0 +1,72 @@
+{% extends 'marketplace/base.html' %}
+
+{% block title %}Shop - Patch!{% endblock %}
+
+{% block content %}
+<!-- 页面标题 -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-semibold mb-2" style="color: var(--primary-green);">All Items</h1>
+            <p style="color: var(--dark-gray);">{{ items|length }} treasures waiting for you</p>
+        </div>
+
+        <!-- 搜索/筛选区 -->
+        <form method="get" class="flex gap-4">
+            <input type="text" name="search" value="{{ search_query }}" placeholder="Search..." class="px-4 py-2 border rounded-lg" style="border-color: var(--light-gray);">
+
+            <select name="major" class="px-4 py-2 border rounded-lg" style="border-color: var(--light-gray);">
+                <option value="">All Majors</option>
+                {% for value, label in majors %}
+                <option value="{{ value }}" {% if major_filter == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="category" class="px-4 py-2 border rounded-lg" style="border-color: var(--light-gray);">
+                <option value="">All Categories</option>
+                {% for value, label in categories %}
+                <option value="{{ value }}" {% if category_filter == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="px-6 py-2 rounded-lg btn-secondary">Search</button>
+
+            {% if search_query or major_filter or category_filter %}
+            <a href="{% url 'marketplace:shop' %}" class="px-6 py-2 rounded-lg border hover:bg-gray-50" style="border-color: var(--dark-gray); color: var(--dark-gray);">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- 商品网格 -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for item in items %}
+        <a href="{% url 'marketplace:item_detail' item.id %}" class="group cursor-pointer">
+            <!-- 商品图片容器 -->
+            <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-3">
+                {% if item.images.first %}
+                    <img src="{{ item.images.first.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover group-hover:opacity-90 transition">
+                {% else %}
+                    <!-- 占位图 -->
+                    <div class="w-full h-full flex items-center justify-center" style="background-color: var(--light-gray);">
+                        <span class="text-4xl">🎨</span>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- 商品信息 -->
+            <div>
+                <h3 class="font-medium mb-1 truncate" style="color: var(--text-black);">{{ item.name }}</h3>
+                <p class="text-sm mb-2 truncate" style="color: var(--dark-gray);">{{ item.description }}</p>
+                <p class="text-lg font-semibold" style="color: var(--primary-orange);">${{ item.price }}</p>
+            </div>
+        </a>
+        {% empty %}
+        <!-- 没有商品时显示 -->
+        <div class="col-span-full text-center py-20">
+            <p class="text-xl mb-4" style="color: var(--dark-gray);">No items yet</p>
+            <a href="{% url 'marketplace:post_item' %}" class="px-6 py-3 rounded-full btn-primary inline-block">Post the first item</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
