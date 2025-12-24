@@ -1,0 +1,14 @@
+.git
+.venv
+venv
+env
+__pycache__
+*.pyc
+*.pyo
+db.sqlite3
+media
+staticfiles
+.DS_Store
+.idea
+*.log
+node_modules
