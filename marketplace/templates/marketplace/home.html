@@ -2,21 +2,21 @@
 
 {% block content %}
 <!-- Hero Section - 首屏大图 -->
-<section class="relative h-screen flex items-center justify-center">
-    <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-green-50 opacity-50"></div>
-    <div class="relative z-10 text-center px-4">
-        <h1 class="text-5xl md:text-7xl font-semibold mb-6" style="color: var(--primary-green);">
+<section class="relative h-[85vh] flex items-center justify-center px-8">
+    <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-green-50 opacity-40"></div>
+    <div class="relative z-10 text-center max-w-5xl">
+        <h1 class="text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-tight" style="color: var(--primary-green);">
             Give Your Art Supplies<br>
             <span style="color: var(--primary-orange);">A Second Life</span>
         </h1>
-        <p class="text-lg md:text-xl mb-8" style="color: var(--dark-gray);">
-            A secondhand marketplace for art students
+        <p class="text-lg md:text-xl mb-10 leading-relaxed" style="color: var(--dark-gray);">
+            A secondhand marketplace designed for art students
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="{% url 'marketplace:shop' %}" class="px-8 py-4 rounded-full text-lg font-medium btn-primary inline-block">
+            <a href="{% url 'marketplace:shop' %}" class="px-9 py-4 rounded-full text-base font-medium btn-primary inline-block transition-all hover:shadow-lg">
                 Start Shopping
             </a>
-            <a href="#" class="px-8 py-4 rounded-full text-lg font-medium btn-secondary inline-block">
+            <a href="{% url 'marketplace:post_item' %}" class="px-9 py-4 rounded-full text-base font-medium btn-secondary inline-block transition-all hover:shadow-lg">
                 Post Item
             </a>
         </div>
@@ -24,43 +24,43 @@
 </section>
 
 <!-- 特色介绍 -->
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+<section class="max-w-6xl mx-auto px-8 py-24">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
         <div class="text-center">
-            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style="background-color: var(--accent-light-green);">
-                <span class="text-2xl">🎨</span>
+            <div class="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center transition-transform hover:scale-110" style="background-color: var(--accent-light-green);">
+                <span class="text-3xl">🎨</span>
             </div>
-            <h3 class="text-xl font-semibold mb-2" style="color: var(--primary-green);">Built for Art Student</h3>
-            <p style="color: var(--dark-gray);">Know your tools, Know your needs</p>
+            <h3 class="text-lg font-semibold mb-2" style="color: var(--primary-green);">Built for Art Students</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--dark-gray);">Know your tools, know your needs</p>
         </div>
         <div class="text-center">
-            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style="background-color: var(--accent-light-green);">
-                <span class="text-2xl">📦</span>
+            <div class="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center transition-transform hover:scale-110" style="background-color: var(--accent-light-green);">
+                <span class="text-3xl">📦</span>
             </div>
-            <h3 class="text-xl font-semibold mb-2" style="color: var(--primary-green);">校园快递柜</h3>
-            <p style="color: var(--dark-gray);">Safe Trading Method</p>
+            <h3 class="text-lg font-semibold mb-2" style="color: var(--primary-green);">Campus Lockers</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--dark-gray);">Safe and convenient trading method</p>
         </div>
         <div class="text-center">
-            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style="background-color: var(--accent-light-green);">
-                <span class="text-2xl">♻️</span>
+            <div class="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center transition-transform hover:scale-110" style="background-color: var(--accent-light-green);">
+                <span class="text-3xl">♻️</span>
             </div>
-            <h3 class="text-xl font-semibold mb-2" style="color: var(--primary-green);">可持续创作</h3>
-            <p style="color: var(--dark-gray);">让好物流转,减少浪费</p>
+            <h3 class="text-lg font-semibold mb-2" style="color: var(--primary-green);">Sustainable Creative Practice</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--dark-gray);">Keep good supplies in circulation, reduce waste</p>
         </div>
     </div>
 </section>
 
 <!-- CTA Section -->
-<section class="py-20" style="background-color: var(--accent-light-green);">
-    <div class="max-w-4xl mx-auto text-center px-4">
-        <h2 class="text-3xl md:text-4xl font-semibold mb-6" style="color: var(--primary-green);">
-            Ready to begin?!
+<section class="py-24" style="background-color: var(--accent-light-green);">
+    <div class="max-w-4xl mx-auto text-center px-8">
+        <h2 class="text-3xl md:text-4xl font-semibold mb-6 leading-tight" style="color: var(--primary-green);">
+            Ready to Begin?
         </h2>
-        <p class="text-lg mb-8" style="color: var(--dark-gray);">
-            Join Patch Community, discover more second-hand tools~~
+        <p class="text-lg mb-8 leading-relaxed" style="color: var(--dark-gray);">
+            Join the Patch community and discover amazing secondhand art supplies
         </p>
-        <a href="{% url 'marketplace:shop' %}" class="px-8 py-4 rounded-full text-lg font-medium btn-primary inline-block">
-            Explore NOW
+        <a href="{% url 'marketplace:shop' %}" class="inline-block px-9 py-4 rounded-full text-base font-medium btn-primary transition-all hover:shadow-lg">
+            Explore Now
         </a>
     </div>
 </section>
