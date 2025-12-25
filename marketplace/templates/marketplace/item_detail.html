@@ -3,6 +3,13 @@
 {% block title %}{{ item.name }} - Patch!{% endblock %}
 
 {% block content %}
+<style>
+/* 取消所有圆角 */
+img, .aspect-square, .aspect-video, .rounded-2xl, .rounded-xl, .rounded-lg {
+    border-radius: 0 !important;
+}
+</style>
+
 <section class="max-w-[1300px] mx-auto px-8 py-8">
     <!-- 返回按钮 -->
     <a href="{% url 'marketplace:shop' %}" class="inline-flex items-center mb-6 hover:opacity-70 transition text-sm" style="color: var(--dark-gray);">
@@ -15,7 +22,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <!-- 左侧: 商品图片 -->
         <div>
-            <div class="aspect-square bg-gray-50 rounded-2xl overflow-hidden mb-4">
+            <div class="aspect-square bg-gray-50 overflow-hidden mb-4">
                 {% if item.images.all %}
                     <img id="mainImage" src="{{ item.images.first.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover">
                 {% else %}
@@ -29,7 +36,7 @@
             {% if item.images.count > 1 %}
             <div class="flex gap-2">
                 {% for img in item.images.all %}
-                <button onclick="changeImage('{{ img.image.url }}')" class="w-16 h-16 rounded-lg overflow-hidden border-2 hover:border-current transition" style="border-color: var(--light-gray); color: var(--primary-orange);">
+                <button onclick="changeImage('{{ img.image.url }}')" class="w-16 h-16 overflow-hidden border-2 hover:border-current transition" style="border-color: var(--light-gray); color: var(--primary-orange);">
                     <img src="{{ img.image.url }}" alt="Thumbnail" class="w-full h-full object-cover">
                 </button>
                 {% endfor %}
@@ -171,7 +178,7 @@
 
         <!-- Outcome图片展示 -->
         <div class="relative">
-            <div class="aspect-video bg-gray-50 rounded-2xl overflow-hidden">
+            <div class="aspect-video bg-gray-50 overflow-hidden">
                 <img id="outcomeImage" src="{{ item.outcomes.first.image.url }}" alt="Outcome" class="w-full h-full object-cover">
             </div>
 
@@ -179,7 +186,7 @@
             {% if item.outcomes.count > 1 %}
             <div class="flex gap-2 mt-4 justify-center">
                 {% for outcome in item.outcomes.all %}
-                <button onclick="changeOutcome('{{ outcome.image.url }}')" class="w-16 h-16 rounded-lg overflow-hidden border-2 hover:border-current transition" style="border-color: var(--light-gray); color: var(--primary-orange);">
+                <button onclick="changeOutcome('{{ outcome.image.url }}')" class="w-16 h-16 overflow-hidden border-2 hover:border-current transition" style="border-color: var(--light-gray); color: var(--primary-orange);">
                     <img src="{{ outcome.image.url }}" alt="Outcome thumbnail" class="w-full h-full object-cover">
                 </button>
                 {% endfor %}
@@ -196,7 +203,7 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
             {% for related in related_items %}
             <a href="{% url 'marketplace:item_detail' related.id %}" class="group block">
-                <div class="aspect-square bg-gray-50 rounded-xl overflow-hidden mb-3">
+                <div class="aspect-square bg-gray-50 overflow-hidden mb-3">
                     {% if related.images.first %}
                         <img src="{{ related.images.first.image.url }}" alt="{{ related.name }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
                     {% else %}

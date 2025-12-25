@@ -1,0 +1,140 @@
+{% extends 'marketplace/base.html' %}
+
+{% block title %}Checkout - Patch!{% endblock %}
+
+{% block content %}
+<section class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 页面标题 -->
+    <h1 class="text-2xl font-semibold mb-6 text-center" style="color: var(--primary-green);">Checkout</h1>
+
+    <!-- 商品信息卡片 - 紧凑版 -->
+    <div class="bg-white rounded-2xl shadow-sm p-4 mb-6 border" style="border-color: var(--light-gray);">
+        <h2 class="text-xs font-semibold mb-3 uppercase tracking-wide" style="color: var(--dark-gray);">You are buying</h2>
+        <div class="flex gap-3">
+            <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                {% if item.images.first %}
+                    <img src="{{ item.images.first.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover">
+                {% else %}
+                    <div class="w-full h-full flex items-center justify-center" style="background-color: var(--light-gray);">
+                        <span class="text-xl">🎨</span>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="flex-1 min-w-0">
+                <h3 class="font-semibold text-sm truncate mb-1" style="color: var(--text-black);">{{ item.name }}</h3>
+                <div class="flex gap-1 mb-1">
+                    {% if item.major %}
+                    <span class="px-2 py-0.5 rounded-full text-xs tag">{{ item.get_major_display }}</span>
+                    {% endif %}
+                    {% if item.category %}
+                    <span class="px-2 py-0.5 rounded-full text-xs tag">{{ item.get_category_display }}</span>
+                    {% endif %}
+                </div>
+                <p class="text-lg font-semibold" style="color: var(--primary-orange);">${{ item.price }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 支付表单 -->
+    <form method="post" id="paymentForm">
+        {% csrf_token %}
+
+        <!-- 个人信息 - 紧凑版 -->
+        <div class="bg-white rounded-2xl shadow-sm p-4 mb-4 border" style="border-color: var(--light-gray);">
+            <h2 class="text-sm font-semibold mb-3" style="color: var(--text-black);">Personal Details</h2>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="col-span-2 sm:col-span-1">
+                    <label class="block text-xs font-medium mb-1" style="color: var(--text-black);">Full Name</label>
+                    <input type="text" name="full_name" required class="w-full px-3 py-2 border rounded-lg text-sm" style="border-color: var(--light-gray);" placeholder="John Doe">
+                </div>
+                <div class="col-span-2 sm:col-span-1">
+                    <label class="block text-xs font-medium mb-1" style="color: var(--text-black);">Phone</label>
+                    <input type="tel" name="phone" required class="w-full px-3 py-2 border rounded-lg text-sm" style="border-color: var(--light-gray);" placeholder="(123) 456-7890">
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-xs font-medium mb-1" style="color: var(--text-black);">Email</label>
+                    <input type="email" name="email" required class="w-full px-3 py-2 border rounded-lg text-sm" style="border-color: var(--light-gray);" placeholder="john@example.com">
+                </div>
+            </div>
+        </div>
+
+        <!-- 支付方式 - 紧凑版 + 真实logo -->
+        <div class="bg-white rounded-2xl shadow-sm p-4 mb-4 border" style="border-color: var(--light-gray);">
+            <h2 class="text-sm font-semibold mb-3" style="color: var(--text-black);">Payment Method</h2>
+
+            <div class="space-y-2">
+                <!-- Venmo -->
+                <label class="flex items-center p-3 border-2 rounded-xl cursor-pointer hover:border-current transition" style="border-color: var(--light-gray); color: var(--primary-orange);">
+                    <input type="radio" name="payment_method" value="venmo" required class="mr-2">
+                    <div class="flex-1 flex items-center justify-between">
+                        <span class="font-medium text-sm" style="color: var(--text-black);">Venmo</span>
+                        <img src="/media/icons/Venmo.png" alt="Venmo" style="height: 24px;">
+                    </div>
+                </label>
+
+                <!-- Cash -->
+                <label class="flex items-center p-3 border-2 rounded-xl cursor-pointer hover:border-current transition" style="border-color: var(--light-gray); color: var(--primary-orange);">
+                    <input type="radio" name="payment_method" value="cash" required class="mr-2">
+                    <div class="flex-1 flex items-center justify-between">
+                        <span class="font-medium text-sm" style="color: var(--text-black);">Cash (In Person)</span>
+                        <span class="text-xl">💵</span>
+                    </div>
+                </label>
+
+                <!-- Zelle -->
+                <label class="flex items-center p-3 border-2 rounded-xl cursor-pointer hover:border-current transition" style="border-color: var(--light-gray); color: var(--primary-orange);">
+                    <input type="radio" name="payment_method" value="zelle" required class="mr-2">
+                    <div class="flex-1 flex items-center justify-between">
+                        <span class="font-medium text-sm" style="color: var(--text-black);">Zelle</span>
+                        <img src="/media/icons/zelle.png" alt="Zelle" style="height: 24px;">
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- 交付方式 - 紧凑版 - 移除emoji -->
+        <div class="bg-white rounded-2xl shadow-sm p-4 mb-4 border" style="border-color: var(--light-gray);">
+            <h2 class="text-sm font-semibold mb-3" style="color: var(--text-black);">Pickup Location</h2>
+
+            <div class="space-y-2">
+                <label class="flex items-center p-3 border-2 rounded-xl cursor-pointer hover:border-current transition" style="border-color: var(--light-gray); color: var(--primary-green);">
+                    <input type="radio" name="pickup_location" value="campus_locker" required class="mr-2">
+                    <div class="flex-1">
+                        <div class="font-medium text-sm" style="color: var(--text-black);">Campus Locker</div>
+                        <div class="text-xs mt-0.5" style="color: var(--dark-gray);">Safe on-campus pickup</div>
+                    </div>
+                </label>
+
+                <label class="flex items-center p-3 border-2 rounded-xl cursor-pointer hover:border-current transition" style="border-color: var(--light-gray); color: var(--primary-green);">
+                    <input type="radio" name="pickup_location" value="in_person" required class="mr-2">
+                    <div class="flex-1">
+                        <div class="font-medium text-sm" style="color: var(--text-black);">Meet in Person</div>
+                        <div class="text-xs mt-0.5" style="color: var(--dark-gray);">Arrange a meetup</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- 按钮 - 紧凑版 -->
+        <div class="flex gap-3">
+            <a href="{% url 'marketplace:message_seller' item.id %}" class="flex-1 py-3 rounded-full font-medium text-sm text-center border hover:bg-gray-50 transition" style="border-color: var(--dark-gray); color: var(--dark-gray);">
+                Back
+            </a>
+            <button type="submit" class="flex-1 py-3 rounded-full font-medium text-sm btn-primary">
+                Confirm Payment
+            </button>
+        </div>
+    </form>
+</section>
+
+<style>
+    input[type="radio"]:checked + div {
+        font-weight: 600;
+    }
+
+    label:has(input[type="radio"]:checked) {
+        border-color: var(--primary-orange) !important;
+        background-color: rgba(255, 121, 90, 0.05);
+    }
+</style>
+{% endblock %}

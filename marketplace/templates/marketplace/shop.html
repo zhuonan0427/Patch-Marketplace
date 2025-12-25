@@ -1,125 +1,117 @@
 {% extends 'marketplace/base.html' %}
 
-{% block title %}Shop - Patch!{% endblock %}
-
 {% block content %}
-<div class="max-w-[1600px] mx-auto px-8 py-12">
-    <div class="flex gap-12">
-        <!-- 左侧固定筛选栏 -->
-        <aside class="w-64 flex-shrink-0 sticky top-8 self-start">
-            <form method="get" id="filterForm">
-                <!-- All Items 标题 -->
-                <div class="mb-8">
-                    <h2 class="text-2xl font-semibold mb-1" style="color: var(--primary-orange);">
-                        All <sup class="text-sm">{{ items|length }}</sup>
-                    </h2>
+<section class="max-w-[1600px] mx-auto px-6 sm:px-8 py-8">
+    <div class="flex gap-8">
+        <!-- 左侧筛选栏 - 3列网格中的1列 -->
+        <aside class="w-80 flex-shrink-0">
+            <div class="sticky top-24 space-y-8">
+                <!-- 搜索框 - 最上面 -->
+                <div>
+                    <form method="get">
+                        <input type="hidden" name="major" value="{{ major_filter }}">
+                        <input type="hidden" name="category" value="{{ category_filter }}">
+                        <input type="text" name="search" value="{{ search_query }}" placeholder="Search" class="w-full px-4 py-3 border rounded-xl focus:outline-none transition text-base" style="border-color: var(--light-gray);" onfocus="this.style.borderColor='var(--primary-orange)'">
+                    </form>
                 </div>
 
-                <!-- Major 筛选 -->
-                <div class="mb-8">
-                    <h3 class="text-sm font-semibold mb-3 uppercase tracking-wide" style="color: var(--text-black);">Major</h3>
-                    <div class="space-y-2">
-                        <label class="flex items-center cursor-pointer group">
-                            <input type="radio" name="major" value="" {% if not major_filter %}checked{% endif %}
-                                   class="mr-3 accent-orange-500" onchange="this.form.submit()">
-                            <span class="text-base group-hover:opacity-70" style="color: var(--text-black);">All</span>
-                        </label>
-                        {% for value, label in majors %}
-                        <label class="flex items-center cursor-pointer group">
-                            <input type="radio" name="major" value="{{ value }}" {% if major_filter == value %}checked{% endif %}
-                                   class="mr-3 accent-orange-500" onchange="this.form.submit()">
-                            <span class="text-base group-hover:opacity-70" style="color: var(--text-black);">{{ label }}</span>
-                        </label>
-                        {% endfor %}
-                    </div>
+                <!-- Major筛选 -->
+                <div>
+                    <h3 class="font-semibold mb-4 text-base" style="color: var(--primary-green);">Major</h3>
+                    <form method="get">
+                        <input type="hidden" name="search" value="{{ search_query }}">
+                        <input type="hidden" name="category" value="{{ category_filter }}">
+                        <div class="space-y-2">
+                            <label class="flex items-center cursor-pointer p-2 rounded-lg transition hover:bg-gray-50">
+                                <input type="radio" name="major" value="" {% if not major_filter %}checked{% endif %} onchange="this.form.submit()" class="mr-3">
+                                <span class="text-sm">All</span>
+                            </label>
+                            {% for value, label in majors %}
+                            <label class="flex items-center cursor-pointer p-2 rounded-lg transition hover:bg-gray-50">
+                                <input type="radio" name="major" value="{{ value }}" {% if major_filter == value %}checked{% endif %} onchange="this.form.submit()" class="mr-3">
+                                <span class="text-sm">{{ label }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </form>
                 </div>
 
-                <!-- Category 筛选 -->
-                <div class="mb-8">
-                    <h3 class="text-sm font-semibold mb-3 uppercase tracking-wide" style="color: var(--text-black);">Category</h3>
-                    <div class="space-y-2">
-                        <label class="flex items-center cursor-pointer group">
-                            <input type="radio" name="category" value="" {% if not category_filter %}checked{% endif %}
-                                   class="mr-3 accent-orange-500" onchange="this.form.submit()">
-                            <span class="text-base group-hover:opacity-70" style="color: var(--text-black);">All</span>
-                        </label>
-                        {% for value, label in categories %}
-                        <label class="flex items-center cursor-pointer group">
-                            <input type="radio" name="category" value="{{ value }}" {% if category_filter == value %}checked{% endif %}
-                                   class="mr-3 accent-orange-500" onchange="this.form.submit()">
-                            <span class="text-base group-hover:opacity-70" style="color: var(--text-black);">{{ label }}</span>
-                        </label>
-                        {% endfor %}
-                    </div>
+                <!-- Category筛选 -->
+                <div>
+                    <h3 class="font-semibold mb-4 text-base" style="color: var(--primary-green);">Category</h3>
+                    <form method="get">
+                        <input type="hidden" name="search" value="{{ search_query }}">
+                        <input type="hidden" name="major" value="{{ major_filter }}">
+                        <div class="space-y-2">
+                            <label class="flex items-center cursor-pointer p-2 rounded-lg transition hover:bg-gray-50">
+                                <input type="radio" name="category" value="" {% if not category_filter %}checked{% endif %} onchange="this.form.submit()" class="mr-3">
+                                <span class="text-sm">All</span>
+                            </label>
+                            {% for value, label in categories %}
+                            <label class="flex items-center cursor-pointer p-2 rounded-lg transition hover:bg-gray-50">
+                                <input type="radio" name="category" value="{{ value }}" {% if category_filter == value %}checked{% endif %} onchange="this.form.submit()" class="mr-3">
+                                <span class="text-sm">{{ label }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </form>
                 </div>
-
-                <!-- 搜索框 -->
-                <div class="mb-8">
-                    <input type="text" name="search" value="{{ search_query }}"
-                           placeholder="Search items..."
-                           class="w-full px-4 py-2 border rounded-lg text-sm"
-                           style="border-color: var(--light-gray);">
-                </div>
-
-                <!-- Clear 按钮 -->
-                {% if search_query or major_filter or category_filter %}
-                <a href="{% url 'marketplace:shop' %}"
-                   class="block text-center px-4 py-2 rounded-lg text-sm hover:opacity-70 transition"
-                   style="color: var(--primary-orange); border: 1px solid var(--primary-orange);">
-                    Clear All Filters
-                </a>
-                {% endif %}
-            </form>
+            </div>
         </aside>
 
-        <!-- 右侧商品网格 -->
+        <!-- 右侧商品区域 -->
         <main class="flex-1">
-            {% if items %}
+            <!-- 标题区域 - 动态显示选中的筛选 -->
+            <div class="flex justify-between items-baseline mb-10">
+                <h1 class="text-5xl font-light" style="color: var(--primary-green);">{{ selected_title }}</h1>
+                <span class="text-lg" style="color: var(--dark-gray);">{{ items.count }} items</span>
+            </div>
+
+            <!-- 商品网格 - 3列 -->
             <div class="grid grid-cols-3 gap-8">
                 {% for item in items %}
                 <a href="{% url 'marketplace:item_detail' item.id %}" class="group block">
                     <!-- 商品图片 -->
-                    <div class="aspect-square bg-gray-50 rounded-2xl overflow-hidden mb-4 relative">
+                    <div class="overflow-hidden mb-4 bg-gray-50">
                         {% if item.images.first %}
-                            <img src="{{ item.images.first.image.url }}"
-                                 alt="{{ item.name }}"
-                                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                            <img src="{{ item.images.first.image.url }}" alt="{{ item.name }}" class="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105">
                         {% else %}
-                            <div class="w-full h-full flex items-center justify-center"
-                                 style="background-color: var(--light-gray);">
-                                <span class="text-6xl opacity-30">🎨</span>
+                            <div class="w-full aspect-square flex items-center justify-center" style="background-color: var(--light-gray);">
+                                <span class="text-6xl">🎨</span>
                             </div>
                         {% endif %}
                     </div>
 
                     <!-- 商品信息 -->
-                    <div class="px-1">
-                        <h3 class="font-medium text-base mb-1 truncate group-hover:opacity-70 transition"
-                            style="color: var(--text-black);">
-                            {{ item.name }}
-                        </h3>
-                        <p class="text-lg font-semibold" style="color: var(--primary-orange);">
-                            ${{ item.price }}
-                        </p>
+                    <h3 class="font-normal mb-2 text-base leading-snug group-hover:opacity-70 transition" style="color: var(--text-black);">{{ item.name }}</h3>
+                    <p class="text-lg font-semibold" style="color: var(--primary-orange);">${{ item.price }}</p>
+
+                    <!-- Tags -->
+                    {% if item.category or item.major %}
+                    <div class="flex flex-wrap gap-1.5 mt-2">
+                        {% if item.major %}
+                        <span class="px-2 py-0.5 rounded text-xs tag">{{ item.get_major_display }}</span>
+                        {% endif %}
+                        {% if item.category %}
+                        <span class="px-2 py-0.5 rounded text-xs tag">{{ item.get_category_display }}</span>
+                        {% endif %}
                     </div>
+                    {% endif %}
                 </a>
+                {% empty %}
+                <div class="col-span-3 text-center py-20">
+                    <p class="text-xl" style="color: var(--dark-gray);">No items found.</p>
+                </div>
                 {% endfor %}
             </div>
-            {% else %}
-            <!-- 空状态 -->
-            <div class="text-center py-32">
-                <div class="mb-6">
-                    <span class="text-8xl opacity-20">🎨</span>
-                </div>
-                <p class="text-xl mb-2" style="color: var(--text-black);">No items found</p>
-                <p class="text-base mb-6" style="color: var(--dark-gray);">Try adjusting your filters</p>
-                <a href="{% url 'marketplace:post_item' %}"
-                   class="inline-block px-6 py-3 rounded-full btn-primary">
-                    Post the First Item
-                </a>
-            </div>
-            {% endif %}
         </main>
     </div>
-</div>
+</section>
+
+<style>
+/* 取消所有图片圆角 */
+img {
+    border-radius: 0 !important;
+}
+</style>
 {% endblock %}

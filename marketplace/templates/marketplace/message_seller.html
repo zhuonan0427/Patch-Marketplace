@@ -4,64 +4,89 @@
 
 {% block content %}
 <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <!-- 商品信息 -->
-    <div class="bg-white rounded-2xl shadow-sm p-6 mb-6 border" style="border-color: var(--light-gray);">
-        <div class="flex gap-6">
-            <div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
-                {% if item.images.first %}
-                    <img src="{{ item.images.first.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover">
-                {% else %}
-                    <div class="w-full h-full flex items-center justify-center" style="background-color: var(--light-gray);">
-                        <span class="text-2xl">🎨</span>
-                    </div>
-                {% endif %}
+    <!-- 商品信息卡片 + Checkout按钮 -->
+    <div class="bg-white rounded-2xl shadow-sm p-6 mb-6 border sticky top-20 z-10" style="border-color: var(--light-gray);">
+        <div class="flex justify-between items-center">
+            <div class="flex gap-6 flex-1">
+                <div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
+                    {% if item.images.first %}
+                        <img src="{{ item.images.first.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center" style="background-color: var(--light-gray);">
+                            <span class="text-2xl">🎨</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-xl font-semibold mb-2" style="color: var(--primary-green);">{{ item.name }}</h2>
+                    <p class="text-2xl font-semibold" style="color: var(--primary-orange);">${{ item.price }}</p>
+                </div>
             </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2" style="color: var(--primary-green);">{{ item.name }}</h2>
-                <p class="text-2xl font-semibold" style="color: var(--primary-orange);">${{ item.price }}</p>
-            </div>
+            <!-- Checkout 按钮 -->
+            <a href="{% url 'marketplace:checkout' item.id %}" class="px-8 py-3 rounded-full font-medium btn-primary whitespace-nowrap ml-4">
+                Checkout
+            </a>
         </div>
     </div>
 
     <h1 class="text-2xl font-semibold mb-6" style="color: var(--text-black);">Messages</h1>
 
-    <!-- 留言列表 -->
-    <div class="space-y-4 mb-8">
+    <!-- 对话气泡列表 - Airbnb风格 -->
+    <div class="space-y-3 mb-8">
         {% for msg in item_messages %}
-        <div class="bg-white rounded-xl p-4 border {% if msg.sender == request.user %}border-orange-200{% else %}border-gray-200{% endif %}">
-            <div class="flex justify-between items-start mb-2">
-                <span class="font-semibold" style="color: var(--text-black);">{{ msg.sender.username }}</span>
-                <span class="text-sm" style="color: var(--dark-gray);">{{ msg.created_at|date:"M d, Y H:i" }}</span>
+        <!-- 判断是买家还是卖家 -->
+        {% if msg.sender == item.seller %}
+            <!-- 卖家消息 - 红色，右对齐 -->
+            <div class="flex justify-end">
+                <div class="max-w-[70%]">
+                    <div class="flex items-center justify-end gap-2 mb-1">
+                        <span class="text-xs" style="color: var(--dark-gray);">{{ msg.created_at|date:"M d, H:i" }}</span>
+                        <span class="text-sm font-medium" style="color: var(--primary-orange);">{{ msg.sender.username }} (Seller)</span>
+                    </div>
+                    <div class="rounded-2xl rounded-tr-sm px-5 py-3" style="background-color: rgba(255, 121, 90, 0.12); border: 1px solid rgba(255, 121, 90, 0.2);">
+                        <p style="color: var(--text-black);">{{ msg.content }}</p>
+                    </div>
+                </div>
             </div>
-            <p style="color: var(--text-black);">{{ msg.content }}</p>
-        </div>
+        {% else %}
+            <!-- 买家消息 - 绿色，左对齐 -->
+            <div class="flex justify-start">
+                <div class="max-w-[70%]">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-sm font-medium" style="color: var(--primary-green);">{{ msg.sender.username }}</span>
+                        <span class="text-xs" style="color: var(--dark-gray);">{{ msg.created_at|date:"M d, H:i" }}</span>
+                    </div>
+                    <div class="rounded-2xl rounded-tl-sm px-5 py-3" style="background-color: rgba(227, 247, 196, 0.6); border: 1px solid rgba(48, 87, 81, 0.15);">
+                        <p style="color: var(--text-black);">{{ msg.content }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
         {% empty %}
-        <p class="text-center py-8" style="color: var(--dark-gray);">No messages yet. Start the conversation!</p>
+        <div class="text-center py-16">
+            <div class="mb-4">
+                <span class="text-6xl">💬</span>
+            </div>
+            <p class="text-lg" style="color: var(--dark-gray);">No messages yet. Start the conversation!</p>
+        </div>
         {% endfor %}
     </div>
 
     <!-- 发送消息表单 -->
-    <div class="bg-white rounded-2xl shadow-lg p-6 border" style="border-color: var(--light-gray);">
+    <div class="bg-white rounded-2xl shadow-lg p-6 border sticky bottom-4" style="border-color: var(--light-gray);">
         <h2 class="text-lg font-semibold mb-4" style="color: var(--text-black);">Send a Message</h2>
         <form method="post">
             {% csrf_token %}
-            <textarea name="content" rows="4" required placeholder="Type your message here..." class="w-full px-4 py-3 border rounded-lg mb-4" style="border-color: var(--light-gray);"></textarea>
+            <textarea name="content" rows="3" required placeholder="Type your message here..." class="w-full px-4 py-3 border rounded-xl mb-4 focus:outline-none transition" style="border-color: var(--light-gray);" onfocus="this.style.borderColor='var(--primary-orange)'"></textarea>
             <div class="flex gap-4">
                 <button type="submit" class="flex-1 py-3 rounded-full font-medium btn-primary">
                     Send Message
                 </button>
-                <a href="{% url 'marketplace:item_detail' item.id %}" class="flex-1 py-3 rounded-full font-medium text-center border hover:bg-gray-50" style="border-color: var(--dark-gray); color: var(--dark-gray);">
+                <a href="{% url 'marketplace:item_detail' item.id %}" class="flex-1 py-3 rounded-full font-medium text-center border hover:bg-gray-50 transition" style="border-color: var(--dark-gray); color: var(--dark-gray);">
                     Back
                 </a>
             </div>
         </form>
     </div>
 </section>
-
-<style>
-    textarea:focus {
-        outline: none;
-        border-color: var(--primary-orange);
-    }
-</style>
 {% endblock %}

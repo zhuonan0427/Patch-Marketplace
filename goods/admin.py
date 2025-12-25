@@ -20,13 +20,13 @@ class OutcomeImageInline(admin.TabularInline):
 
 @admin.register(Goods)
 class GoodsAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price', 'major', 'category', 'created_at']
-    list_filter = ['major', 'category', 'created_at']
+    list_display = ['name', 'price', 'seller', 'major', 'category', 'created_at']
+    list_filter = ['major', 'category', 'created_at', 'seller']
     search_fields = ['name', 'description', 'professor', 'course_code']
 
     fieldsets = (
         ('Basic Information', {
-            'fields': ('name', 'price', 'description')
+            'fields': ('name', 'price', 'description', 'seller')  # 添加seller
         }),
         ('Tags & Classification', {
             'fields': ('major', 'professor', 'category', 'course_code')
@@ -55,10 +55,12 @@ class OutcomeImageAdmin(admin.ModelAdmin):
     list_display = ['goods', 'order', 'image']
     list_filter = ['goods']
 
+
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
     list_display = ['sender', 'item', 'created_at', 'is_read']
     list_filter = ['is_read', 'created_at']
+
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):

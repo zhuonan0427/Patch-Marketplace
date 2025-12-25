@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Patch! - 艺术生的二手市集{% endblock %}</title>
+    <title>{% block title %}Patch! - Art Student Marketplace{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Public Sans for headings/primary, Inter for body text -->
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-orange: #FF795A;
@@ -20,6 +21,9 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             color: var(--text-black);
+        }
+        h1, h2, h3, h4, h5, h6, .primary-font {
+            font-family: 'Public Sans', sans-serif;
         }
         .btn-primary {
             background-color: var(--primary-orange);
@@ -39,35 +43,56 @@
             background-color: var(--accent-light-green);
             color: var(--primary-green);
         }
+
+        /* 导航图标样式 - 无滤镜，图标本身已是品牌绿色 */
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        .nav-link:hover .nav-icon {
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body class="bg-white">
     <!-- 导航栏 -->
-    <nav class="border-b" style="border-color: var(--light-gray);">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="border-b sticky top-0 bg-white z-50" style="border-color: var(--light-gray);">
+        <div class="max-w-[1600px] mx-auto px-6 sm:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
-                <a href="{% url 'marketplace:home' %}" class="text-2xl font-semibold" style="color: var(--primary-orange);">
+                <a href="{% url 'marketplace:home' %}" class="text-2xl font-semibold primary-font" style="color: var(--primary-orange);">
                     Patch!
                 </a>
 
-                <!-- 导航链接 -->
-                <div class="hidden md:flex space-x-8">
-                    <a href="{% url 'marketplace:home' %}" class="hover:opacity-70" style="color: var(--text-black);">Home</a>
-                    <a href="{% url 'marketplace:shop' %}" class="hover:opacity-70" style="color: var(--text-black);">Shop</a>
-                    <a href="{% url 'marketplace:post_item' %}" class="hover:opacity-70" style="color: var(--text-black);">Post</a>
+                <!-- 中间导航链接 - 居中 - 带图标 - 深绿色 -->
+                <div class="hidden md:flex space-x-8 absolute left-1/2 transform -translate-x-1/2">
+                    <a href="{% url 'marketplace:home' %}" class="nav-link hover:opacity-70 transition text-sm font-medium flex items-center" style="color: var(--primary-green);">
+                        <img src="/media/icons/home.png" alt="" class="nav-icon">
+                        Home
+                    </a>
+                    <a href="{% url 'marketplace:shop' %}" class="nav-link hover:opacity-70 transition text-sm font-medium flex items-center" style="color: var(--primary-green);">
+                        <img src="/media/icons/shop.png" alt="" class="nav-icon">
+                        Shop
+                    </a>
+                    <a href="{% url 'marketplace:post_item' %}" class="nav-link hover:opacity-70 transition text-sm font-medium flex items-center" style="color: var(--primary-green);">
+                        <img src="/media/icons/post.png" alt="" class="nav-icon">
+                        Post
+                    </a>
                 </div>
 
-                <!-- 用户操作 -->
+                <!-- 右侧用户操作 -->
                 <div class="flex items-center space-x-4">
                     {% if user.is_authenticated %}
-                        <a href="{% url 'marketplace:my_account' %}" class="text-sm hover:opacity-70" style="color: var(--dark-gray);">
+                        <a href="{% url 'marketplace:my_account' %}" class="text-sm hover:opacity-70 transition hidden sm:block" style="color: var(--dark-gray);">
                             Hi, {{ user.username }}
                         </a>
-                        <a href="{% url 'marketplace:logout' %}" class="text-sm hover:opacity-70" style="color: var(--dark-gray);">Logout</a>
+                        <a href="{% url 'marketplace:logout' %}" class="text-sm hover:opacity-70 transition" style="color: var(--dark-gray);">Logout</a>
                     {% else %}
-                        <a href="{% url 'marketplace:login' %}" class="text-sm hover:opacity-70" style="color: var(--dark-gray);">Login</a>
-                        <a href="{% url 'marketplace:register' %}" class="px-4 py-2 rounded-full text-sm font-medium btn-primary">Sign Up</a>
+                        <a href="{% url 'marketplace:login' %}" class="text-sm hover:opacity-70 transition" style="color: var(--dark-gray);">Login</a>
+                        <a href="{% url 'marketplace:register' %}" class="px-5 py-2 rounded-full text-sm font-medium btn-primary">Sign Up</a>
                     {% endif %}
                 </div>
             </div>
@@ -76,7 +101,7 @@
 
     <!-- 消息提示 -->
     {% if messages %}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+    <div class="max-w-[1600px] mx-auto px-6 sm:px-8 mt-4">
         {% for message in messages %}
         <div class="p-4 rounded-lg mb-2 {% if message.tags == 'success' %}bg-green-50 text-green-800{% elif message.tags == 'error' %}bg-red-50 text-red-800{% else %}bg-blue-50 text-blue-800{% endif %}">
             {{ message }}
@@ -93,10 +118,10 @@
 
     <!-- 页脚 -->
     <footer class="mt-20 border-t" style="border-color: var(--light-gray);">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="max-w-[1600px] mx-auto px-6 sm:px-8 py-12">
             <div class="text-center" style="color: var(--dark-gray);">
-                <p class="text-sm">© 2025 Patch! 艺术生的二手市集</p>
-                <p class="text-xs mt-2">为艺术生打造的画材/教材交易平台</p>
+                <p class="text-sm">© 2025 Patch! - Art Student Marketplace</p>
+                <p class="text-xs mt-2">A secondhand trading platform for art students</p>
             </div>
         </div>
     </footer>

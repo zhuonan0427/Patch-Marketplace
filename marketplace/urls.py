@@ -18,4 +18,6 @@ urlpatterns = [
     path('item/<int:item_id>/message/', views.message_seller, name='message_seller'),
     path('item/<int:item_id>/favorite/', views.toggle_favorite, name='toggle_favorite'),
     path('favorites/', views.favorites_list, name='favorites'),
+    # 支付流程
+    path('checkout/<int:item_id>/', views.checkout, name='checkout'),
 ]

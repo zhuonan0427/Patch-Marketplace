@@ -1,10 +1,3 @@
-from django.shortcuts import render
-
-# Create your views here.
-# marketplace/views.py
-from django.shortcuts import render
-from goods.models import Goods  # 使用你已有的商品模型
-
 # marketplace/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
@@ -12,13 +5,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.db import models
-from goods.models import Goods
+from goods.models import Goods, Message, Favorite, GoodsImage, OutcomeImage
+import random
 
 
 def home(request):
     """首页视图"""
     return render(request, 'marketplace/home.html')
 
+
+# 在 marketplace/views.py 的 shop 函数中修改
 
 def shop(request):
     """商品列表页视图 + 搜索筛选"""
@@ -47,6 +43,15 @@ def shop(request):
     majors = Goods.MAJOR_CHOICES
     categories = Goods.CATEGORY_CHOICES
 
+    # 获取选中筛选的显示名称
+    selected_title = "All"
+    if major_filter:
+        selected_title = dict(majors).get(major_filter, "All")
+    elif category_filter:
+        selected_title = dict(categories).get(category_filter, "All")
+    elif search_query:
+        selected_title = f'Search: "{search_query}"'
+
     context = {
         'items': items,
         'search_query': search_query,
@@ -54,6 +59,7 @@ def shop(request):
         'category_filter': category_filter,
         'majors': majors,
         'categories': categories,
+        'selected_title': selected_title,  # 新增
     }
     return render(request, 'marketplace/shop.html', context)
 
@@ -70,7 +76,6 @@ def item_detail(request, item_id):
     # 检查当前用户是否收藏
     is_favorited = False
     if request.user.is_authenticated:
-        from goods.models import Favorite
         is_favorited = Favorite.objects.filter(user=request.user, item=item).exists()
 
     context = {
@@ -145,7 +150,6 @@ def post_item(request):
             item.save()
 
             # 保存商品图片
-            from goods.models import GoodsImage, OutcomeImage
             for i, img in enumerate(images[:3]):  # 最多3张
                 GoodsImage.objects.create(goods=item, image=img, order=i)
 
@@ -205,7 +209,6 @@ def delete_item(request, item_id):
 @login_required
 def message_seller(request, item_id):
     """给卖家留言"""
-    from goods.models import Message
     item = get_object_or_404(Goods, id=item_id)
 
     if request.method == 'POST':
@@ -217,7 +220,7 @@ def message_seller(request, item_id):
                 content=content
             )
             messages.success(request, 'Message sent!')
-            return redirect('marketplace:item_detail', item_id=item.id)
+            return redirect('marketplace:message_seller', item_id=item.id)
 
     # 获取该商品的所有留言
     item_messages = Message.objects.filter(item=item).select_related('sender')
@@ -232,7 +235,6 @@ def message_seller(request, item_id):
 @login_required
 def toggle_favorite(request, item_id):
     """收藏/取消收藏"""
-    from goods.models import Favorite
     item = get_object_or_404(Goods, id=item_id)
 
     favorite, created = Favorite.objects.get_or_create(user=request.user, item=item)
@@ -251,8 +253,38 @@ def toggle_favorite(request, item_id):
 @login_required
 def favorites_list(request):
     """我的收藏列表"""
-    from goods.models import Favorite
     favorites = Favorite.objects.filter(user=request.user).select_related('item')
 
     context = {'favorites': favorites}
     return render(request, 'marketplace/favorites.html', context)
+
+
+@login_required
+def checkout(request, item_id):
+    """支付页面"""
+    item = get_object_or_404(Goods, id=item_id)
+
+    if request.method == 'POST':
+        # 获取表单数据
+        full_name = request.POST.get('full_name')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        payment_method = request.POST.get('payment_method')
+        pickup_location = request.POST.get('pickup_location')
+
+        # 生成订单号（演示用）
+        order_number = f"PATCH{random.randint(10000, 99999)}"
+
+        # 重定向到确认页面，传递数据
+        return render(request, 'marketplace/payment_complete.html', {
+            'item': item,
+            'payment_method': payment_method,
+            'pickup_location': pickup_location,
+            'order_number': order_number,
+            'full_name': full_name,
+            'email': email,
+        })
+
+    return render(request, 'marketplace/checkout.html', {
+        'item': item,
+    })
